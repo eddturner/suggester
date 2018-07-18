@@ -9,9 +9,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
 
 /**
+ * Provides beans used to give access to suggestions retrieved from a Solr instance.
+ *
  * Created 18/07/18
  *
  * @author Edd
@@ -32,15 +34,15 @@ public class SuggesterServiceConfig {
     public SolrClient createSolr(SolrConfigProperties solrConfigProperties) {
         String solrUrl = solrConfigProperties.getUrl();
         if (solrConfigProperties.isUseCloudClient()) {
-            String[] split = solrUrl.split(COMMA);
-            LOGGER.debug("Using CloudSolrClient (i.e., pointing to a Zookeeper) with url: {}", split);
-            CloudSolrClient build = new CloudSolrClient.Builder().withZkHost(Arrays.asList(split)).build();
-            build.setDefaultCollection(solrConfigProperties.getCollectionName());
+            String[] solrUrls = solrUrl.split(COMMA);
+            LOGGER.debug("Using CloudSolrClient (i.e., pointing to a Zookeeper) with url: {}", solrUrls);
+            CloudSolrClient cloudSolrClient = new CloudSolrClient.Builder().withZkHost(asList(solrUrls)).build();
+            cloudSolrClient.setDefaultCollection(solrConfigProperties.getCollectionName());
             String idFieldName = solrConfigProperties.getIdFieldName();
             if (!idFieldName.equals(ID)) {
-                build.setIdField(idFieldName);
+                cloudSolrClient.setIdField(idFieldName);
             }
-            return build;
+            return cloudSolrClient;
         } else {
             LOGGER.debug("Using ConcurrentUpdateSolrClient with url: {}", solrUrl);
             return new ConcurrentUpdateSolrClient.Builder(solrUrl)

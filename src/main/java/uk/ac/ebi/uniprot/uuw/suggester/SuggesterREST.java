@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 /**
+ * Starts the REST application.
+ *
  * Created 18/07/18
  *
  * @author Edd

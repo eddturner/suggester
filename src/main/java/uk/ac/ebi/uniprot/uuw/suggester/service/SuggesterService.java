@@ -24,7 +24,6 @@ public class SuggesterService {
     private static final String SUGGEST_DICTIONARY = "suggest.dictionary";
     private static final String SUGGEST_Q = "suggest.q";
 
-
     public SuggesterService(SolrClient solrClient) {
         this.solrClient = solrClient;
     }
@@ -39,7 +38,7 @@ public class SuggesterService {
             return Suggestions.createSuggestions(
                     dictionary,
                     query,
-                    solrClient.query("uniprot", solrQuery).getSuggesterResponse());
+                    solrClient.query(solrQuery).getSuggesterResponse());
         } catch (SolrServerException | IOException e) {
             String message = "Could not get suggestions for: [" + dictionary.getId() + ", " + query + "]";
             LOGGER.error(message, e);

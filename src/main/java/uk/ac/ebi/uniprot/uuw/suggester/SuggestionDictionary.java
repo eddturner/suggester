@@ -1,8 +1,8 @@
 package uk.ac.ebi.uniprot.uuw.suggester;
 
 /**
- *
- * // TODO: 18/07/18  add class description
+ * An enumeration of all the valid suggestion dictionaries available from the Solr instance that this
+ * REST application accesses.
  *
  * Created 18/07/18
  *

@@ -21,9 +21,6 @@ import java.util.stream.Collectors;
  */
 @ControllerAdvice
 public class ResponseExceptionHandler {
-
-
-
     @ExceptionHandler({IllegalArgumentException.class, SuggestionRetrievalException.class})
     protected ResponseEntity<ErrorInfo> handleBadRequest(RuntimeException ex, HttpServletRequest request) {
         ErrorInfo error = new ErrorInfo(request.getRequestURL().toString(), ex.getMessage());
@@ -44,16 +41,16 @@ public class ResponseExceptionHandler {
         private final List<String> messages;
 
         ErrorInfo(String url, String message) {
-            assert url != null : "Error URL can't be null";
-            assert message != null : "Error messages can't be null";
+            assert url != null : "Error URL cannot be null";
+            assert message != null : "Error messages cannot be null";
 
             this.url = url;
             this.messages = Collections.singletonList(message);
         }
 
         public ErrorInfo(String url, List<String> messages) {
-            assert url != null : "Error URL can't be null";
-            assert messages != null : "Error messages can't be null";
+            assert url != null : "Error URL cannot be null";
+            assert messages != null : "Error messages cannot be null";
 
             this.url = url;
             this.messages = messages;

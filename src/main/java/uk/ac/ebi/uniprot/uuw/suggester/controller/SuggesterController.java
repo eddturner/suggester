@@ -14,6 +14,8 @@ import uk.ac.ebi.uniprot.uuw.suggester.service.SuggesterServiceConfig;
 import static uk.ac.ebi.uniprot.uuw.suggester.service.SuggestionValidator.getSuggestionDictionary;
 
 /**
+ * Controller for the suggestion service.
+ *
  * Created 18/07/18
  *
  * @author Edd
