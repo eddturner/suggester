@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * Captures exceptions raised by the application, and handles them in a tailored way.
+ *
  * Created 18/07/18
  *
  * @author Edd

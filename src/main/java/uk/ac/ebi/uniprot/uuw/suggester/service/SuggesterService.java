@@ -17,12 +17,10 @@ import java.io.IOException;
  */
 public class SuggesterService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SuggesterService.class);
-
-    private final SolrClient solrClient;
-
     private static final String SUGGEST_HANDLER = "/suggest";
     private static final String SUGGEST_DICTIONARY = "suggest.dictionary";
     private static final String SUGGEST_Q = "suggest.q";
+    private final SolrClient solrClient;
 
     public SuggesterService(SolrClient solrClient) {
         this.solrClient = solrClient;
@@ -38,7 +36,10 @@ public class SuggesterService {
             return Suggestions.createSuggestions(
                     dictionary,
                     query,
-                    solrClient.query(solrQuery).getSuggesterResponse());
+                    solrClient.query(solrQuery)
+                            .getSuggesterResponse()
+                            .getSuggestedTerms()
+                            .get(dictionary.getId()));
         } catch (SolrServerException | IOException e) {
             String message = "Could not get suggestions for: [" + dictionary.getId() + ", " + query + "]";
             LOGGER.error(message, e);

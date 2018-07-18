@@ -1,6 +1,5 @@
 package uk.ac.ebi.uniprot.uuw.suggester.model;
 
-import org.apache.solr.client.solrj.response.SuggesterResponse;
 import uk.ac.ebi.uniprot.uuw.suggester.SuggestionDictionary;
 
 import java.util.List;
@@ -21,8 +20,8 @@ public class Suggestions {
         this.suggestions = suggestions;
     }
 
-    public static Suggestions createSuggestions(SuggestionDictionary dictionary, String query, SuggesterResponse response) {
-        return new Suggestions(dictionary.name(), query, response.getSuggestedTerms().get(dictionary.getId()));
+    public static Suggestions createSuggestions(SuggestionDictionary dictionary, String query, List<String> suggestionList) {
+        return new Suggestions(dictionary.name(), query, suggestionList);
     }
 
     public String getDictionary() {
