@@ -32,8 +32,8 @@ public class SuggesterController {
 
     @RequestMapping(value = "/suggester")
     public ResponseEntity<Suggestions> suggester(
-            @RequestParam(value = "dict", required = false) String dict,
-            @RequestParam(value = "query", required = false) String query) {
+            @RequestParam(value = "dict", required = true) String dict,
+            @RequestParam(value = "query", required = true) String query) {
         return new ResponseEntity<>(
                 suggesterService.getSuggestions(getSuggestionDictionary(dict), query),
                 HttpStatus.OK);
