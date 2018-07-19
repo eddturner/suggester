@@ -3,20 +3,29 @@ package uk.ac.ebi.uniprot.uuw.suggester.service;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.util.NamedList;
+import org.apache.solr.client.solrj.response.SuggesterResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.ac.ebi.uniprot.uuw.suggester.SuggestionDictionary;
+import uk.ac.ebi.uniprot.uuw.suggester.model.Suggestions;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static uk.ac.ebi.uniprot.uuw.suggester.SuggestionDictionary.taxonomy;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+
+
 
 /**
  * Created 18/07/18
@@ -36,17 +45,33 @@ public class SuggesterServiceTest {
 
     @Test
     public void createsSuggestionsWhenSolrFindsThemSuccessfully() throws IOException, SolrServerException {
-        // TODO: 18/07/18
-        Map<String, NamedList<Object>> responseMap = new HashMap<>();
-        QueryResponse queryResponse = new QueryResponse();
-//        queryResponse.setResponse();
-        when(solrClient.query(any())).thenReturn(queryResponse);
+        SuggestionDictionary dict = taxonomy;
+        String query = "any string";
+        List<String> suggestions = asList("suggestion 1", "suggestion 2");
+
+        String dictStr = dict.name();
+        mockServiceQueryResponse(dict, suggestions);
+
+        Suggestions retrievedSuggestions = suggesterService.getSuggestions(dict, query);
+        assertThat(retrievedSuggestions.getDictionary(), is(dictStr));
+        assertThat(retrievedSuggestions.getQuery(), is(query));
+        assertThat(retrievedSuggestions.getSuggestions(), is(suggestions));
     }
 
     @SuppressWarnings("unchecked")
     @Test(expected = SuggestionRetrievalException.class)
     public void suggestionThatCausesSolrExceptionCausesSuggestionRetrievalException() throws IOException, SolrServerException {
         when(solrClient.query(any())).thenThrow(SolrServerException.class);
-        suggesterService.getSuggestions(SuggestionDictionary.taxonomy, "some text");
+        suggesterService.getSuggestions(taxonomy, "some text");
+    }
+
+    private void mockServiceQueryResponse(SuggestionDictionary dict, List<String> suggestions) throws SolrServerException, IOException {
+        Map<String, List<String>> suggestionMap = new HashMap<>();
+        suggestionMap.put(dict.getId(), suggestions);
+        QueryResponse queryResponse = mock(QueryResponse.class);
+        SuggesterResponse suggesterResponse = mock(SuggesterResponse.class);
+        when(queryResponse.getSuggesterResponse()).thenReturn(suggesterResponse);
+        when(suggesterResponse.getSuggestedTerms()).thenReturn(suggestionMap);
+        when(solrClient.query(any())).thenReturn(queryResponse);
     }
 }
